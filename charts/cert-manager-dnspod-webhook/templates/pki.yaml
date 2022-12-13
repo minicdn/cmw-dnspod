@@ -89,11 +89,23 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   acme:
-{{- if .Values.clusterIssuer.staging }}
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
-{{- else }}
-    server: https://acme-v02.api.letsencrypt.org/directory
-{{- end }}
+    {{- if or (empty .Values.clusterIssuer.server) (eq (lower .Values.clusterIssuer.server) "letsencrypt") }}
+    server: {{ if .Values.clusterIssuer.staging }}"https://acme-staging-v02.api.letsencrypt.org/directory"{{ else }}"https://acme-v02.api.letsencrypt.org/directory"{{ end }}
+    {{- else if eq (lower .Values.clusterIssuer.server) "google" }}
+    server: {{ if .Values.clusterIssuer.staging }}"	https://dv.acme-v02.api.pki.goog/directory"{{ else }}"https://dv.acme-v02.test-api.pki.goog/directory"{{ end }}
+    {{- else if eq (lower .Values.clusterIssuer.server) "zerossl"}}
+    server: "https://acme.zerossl.com/v2/DV90"
+    {{- else if eq (lower .Values.clusterIssuer.server) "buypass" }}
+    server: {{ if .Values.clusterIssuer.staging }}"https://api.buypass.com/acme/directory"{{ else }}"https://api.test4.buypass.no/acme/directory"{{ end }}
+    {{- else if eq (lower .Values.clusterIssuer.server) "sslcom" }}
+    server: "https://acme.ssl.com/sslcom-dv-rsa"
+    {{- else if eq (lower .Values.clusterIssuer.server) "sslcom-ecc" }}
+    server: "https://acme.ssl.com/sslcom-dv-ecc"
+    {{- else if eq (lower .Values.clusterIssuer.server) "hica" }}
+    server: "http://acme.hi.cn/directory"
+    {{- else }}
+    server: {{ (lower .Values.clusterIssuer.server) }}
+    {{- end }}
     email: {{ .Values.clusterIssuer.email }}
     privateKeySecretRef:
       name: {{ include "cert-manager-webhook-dnspod.fullname" . }}-letsencrypt

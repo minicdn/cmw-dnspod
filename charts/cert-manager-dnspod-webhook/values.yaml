@@ -13,14 +13,15 @@ certManager:
   namespace: ""
   serviceAccountName: ""
 
-#secrets:
-# apiID:
-# apiToken:
+secrets: 
+  apiID: 0
+  apiToken: "token"
 
 clusterIssuer:
-  enabled: false
+  enabled: true
+  server: ""
   staging: false
-  #email:
+  email: "username@example.com"
 
   # https://cert-manager.io/docs/configuration/acme/#adding-multiple-solver-types
   #selector:
