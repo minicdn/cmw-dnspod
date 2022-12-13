@@ -9,8 +9,8 @@
 groupName: acme.mycompany.com
 
 certManager:
-  namespace: cert-manager
-  serviceAccountName: cert-manager
+  namespace: ""
+  serviceAccountName: ""
 
 #secrets:
 # apiID:
